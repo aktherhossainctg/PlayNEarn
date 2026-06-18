@@ -24,7 +24,11 @@
     <!-- TELEGRAM WEB APP SCRIPT -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+    <!-- Adsgram Script -->
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
     <!-- MONETAG SCRIPT (REAL SDK) -->
+    <script src='//libtl.com/sdk.js' data-zone='11167129' data-sdk='show_11167129'></script>
     
 
     <style>
@@ -658,26 +662,33 @@
             m.classList.remove('hidden'); m.classList.add('flex');
         }
 
-        function handleAdClickLink() {
-            isWaitingForAdClick = true;
-            adClickStartTime = Date.now();
-            
-            if (typeof show_ === 'function') {
-                show_().then(() => {
-                    if (isWaitingForAdClick) {
-                        isWaitingForAdClick = false;
-                        showToast("You must CLICK the ad to claim!", "error");
-                    }
-                }).catch(e => {
-                    console.error("Ad Error", e);
-                    showToast("Ad Failed. Try again.", "error");
-                    isWaitingForAdClick = false;
-                });
-            } else {
-                showToast("Ad Not Ready", "error");
-                isWaitingForAdClick = false;
-            }
+       function handleAdClickLink() {
+    // পপআপ মডালটি হাইড করার জন্য
+    const m = document.getElementById('ad-click-req-modal');
+    if (m) {
+        m.classList.add('hidden'); 
+        m.classList.remove('flex');
+    }
+    
+    // অ্যাড ক্লিক ট্র্যাক করার জন্য আপনার পুরনো লজিক চালু করা হলো
+    isWaitingForAdClick = true;
+    adClickStartTime = Date.now();
+    
+    showToast("Loading Ads... Please CLICK the ad!", "info");
+    
+    // ডাবল অ্যাড ফাংশনটি কল করা হচ্ছে
+    playDoubleAds(() => {
+        // দুটি অ্যাড দেখা শেষ হলে সিস্টেম চেক করবে ইউজার অ্যাডে ক্লিক করেছিল কি না
+        if (isWaitingForAdClick) {
+            // যদি ইউজার কোনো অ্যাডে ক্লিক না করে থাকে
+            isWaitingForAdClick = false; // ভেরিয়েবল রিসেট
+            showToast("You must CLICK the ad to claim the reward!", "error");
+        } else {
+            // যদি ইউজার অ্যাডে (যেমন Adsgram-এ) ক্লিক করে থাকে, তবে কয়েন অ্যাড হবে
+            saveGameEarnings(pendingRewardAmount, pendingRewardSrc);
         }
+    });
+}
 
         function showClaimOverlay(source) {
             pendingRewardSrc = source;
@@ -685,23 +696,31 @@
             document.getElementById('claim-overlay').classList.add('flex');
         }
 
-        function startAdSequence() {
-            document.getElementById('claim-overlay').classList.add('hidden');
-            document.getElementById('claim-overlay').classList.remove('flex');
-            showToast("Loading Ad...", "info");
-            
-            if (typeof show_ === 'function') {
-                show_().then(() => {
-                    saveGameEarnings(pendingRewardAmount, pendingRewardSrc);
-                }).catch(e => {
-                    console.error('Monetag error', e);
-                    saveGameEarnings(pendingRewardAmount, pendingRewardSrc);
-                });
-            } else {
-                console.warn("Monetag SDK not ready");
-                saveGameEarnings(pendingRewardAmount, pendingRewardSrc);
-            }
+       function startAdSequence() {
+    // ক্লেইম পপআপটি হাইড করার জন্য
+    document.getElementById('claim-overlay').classList.add('hidden');
+    document.getElementById('claim-overlay').classList.remove('flex');
+    
+    // অ্যাড ক্লিক ট্র্যাক করার ভেরিয়েবল চালু করা হলো
+    isWaitingForAdClick = true;
+    adClickStartTime = Date.now();
+    
+    // অ্যাড লোড হওয়ার মেসেজ (ইউজারকে ক্লিক করার কথা মনে করিয়ে দিতে)
+    showToast("Loading Ads... Please CLICK the ad to claim!", "info");
+    
+    // নতুন ডাবল অ্যাড ফাংশনটি কল করা হচ্ছে
+    playDoubleAds(() => {
+        // দুটি অ্যাড দেখা শেষ হলে সিস্টেম চেক করবে ইউজার অ্যাডে ক্লিক করেছিল কি না
+        if (isWaitingForAdClick) {
+            // যদি ইউজার কোনো অ্যাডে ক্লিক না করে থাকে
+            isWaitingForAdClick = false; // ভেরিয়েবল রিসেট
+            showToast("You must CLICK the ad to claim the reward!", "error");
+        } else {
+            // যদি ইউজার অ্যাডে (যেমন Adsgram-এ) ক্লিক করে থাকে, তবে কয়েন অ্যাড হবে
+            saveGameEarnings(pendingRewardAmount, pendingRewardSrc);
         }
+    });
+}
 
         async function saveGameEarnings(amount, source) {
             if (!currentUser) return;
@@ -1061,6 +1080,63 @@
             t.className = `${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white text-xs font-bold px-4 py-3 rounded-full shadow-lg flex items-center gap-2 animate-float z-[101]`;
             t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check' : 'fa-info-circle'}"></i> ${msg}`; c.appendChild(t); setTimeout(() => t.remove(), 3000);
         }
+
+        function showAdsgramAd(onSuccess) {
+    if (window.Adsgram) {
+        // আপনার কপি করা Block ID নিচে দিন
+        const AdController = window.Adsgram.init({ blockId: "35555" });
+        
+        AdController.show()
+            .then((result) => {
+                // ইউজার সম্পূর্ণ অ্যাড দেখলে এই ব্লকটি কাজ করবে
+                onSuccess();
+            })
+            .catch((error) => {
+                // ইউজার অ্যাড কেটে দিলে বা অ্যাড লোড না হলে
+                showToast("Ad closed or failed to load. Please try again.", "error");
+            });
+    } else {
+        showToast("Ad system is loading, please wait...", "error");
+    }
+}
+
+        function playDoubleAds(onSuccess) {
+    // প্রথমে Adsgram অ্যাড কল করা হচ্ছে
+    if (window.Adsgram) {
+        const AdController = window.Adsgram.init({ blockId: "35555" }); // এখানে আপনার Adsgram ID দিন
+        
+        AdController.show()
+            .then((result) => {
+                // ১. Adsgram অ্যাড দেখা সফল হলে এবার Monetag অ্যাড কল হবে
+                if (typeof show_ === 'function') {
+                    show_().then(() => {
+                        // ২. Monetag অ্যাড দেখাও সফল! এবার রিওয়ার্ড দিয়ে দিন
+                        onSuccess();
+                    }).catch(() => {
+                        // Monetag অ্যাড কেটে দিলে
+                        onSuccess(); // অনেক সময় Monetag এর এরর ঠিকমতো কাজ করে না, তাই রিওয়ার্ড দিয়ে দেওয়া সেফ।
+                    });
+                } else {
+                    // যদি কোনো কারণে Monetag লোড না হয়, তবে Adsgram দেখেই রিওয়ার্ড পাবে
+                    onSuccess();
+                }
+            })
+            .catch((error) => {
+                // ইউজার যদি প্রথম Adsgram অ্যাডটি কেটে দেয় বা না দেখে
+                showToast("You must watch both ads to claim the reward!", "error");
+            });
+    } else {
+        // যদি Adsgram সার্ভার ডাউন থাকে বা লোড না হয়, তবে শুধু Monetag দেখাবে
+        if (typeof show_ === 'function') {
+            show_().then(() => {
+                onSuccess();
+            });
+        } else {
+            onSuccess(); // কোনো অ্যাডই লোড না হলে ফ্রি রিওয়ার্ড দিয়ে দেবে
+        }
+    }
+}
+        
     </script>
 </body>
 </html>
