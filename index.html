@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'/>
-    <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
-    <title><data:blog.pageTitle/></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamX</title>
     
-    <!-- CSS Section for Blogger -->
-    <b:skin><![CDATA[
+    <!-- CSS Section (Blogger tags removed) -->
+    <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background-color: #0f0f13; color: white; }
         .header { background: #1a1a24; padding: 15px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
@@ -46,103 +45,87 @@
         .action-btn { background: #222; border: none; color: white; padding: 10px 15px; border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; flex: 1;}
         .unlock-btn { background: #f39c12; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; text-align: center; }
         .unlock-btn:disabled { background: #555; cursor: not-allowed; }
-    ]]></b:skin>
+    </style>
 
-    <!-- Firebase CDN -->
-    <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js'/>
-    <script src='https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js'/>
+    <!-- Firebase CDN (Self-closing tags fixed) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    <!-- &#9888;&#65039; Monetag SDK (আপন&#2494;র Monetag ট&#2509;য&#2494;গ ল&#2495;&#2434;কট&#2495; এখ&#2494;ন&#2503; বস&#2494;ব&#2503;ন) -->
+    <!-- Monetag SDK -->
+    <script data-sdk="show_11167129" data-zone="11167129" src="//libtl.com/sdk.js"></script>
   
- <script data-sdk='show_11167129' data-zone='11167129' src='//libtl.com/sdk.js'/>
-  
-   <!-- TELEGRAM WEB APP SCRIPT -->
-    <script src='https://telegram.org/js/telegram-web-app.js'/>
+    <!-- TELEGRAM WEB APP SCRIPT -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- Adsgram Script -->
-<script src='https://sad.adsgram.ai/js/sad.min.js'/>
-  
-    <!-- <script src="https://alwingulla.com/88/tag.min.js"></script> -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 </head>
 <body>
-    
-    <!-- 🟢 Blogger Required Safe Section -->
-    <div style='display:none;'>
-        <b:section id='main' showaddelement='no'>
-          <b:widget id='HTML1' locked='false' title='Dummy' type='HTML' version='2' visible='false'>
-            <b:widget-settings>
-              <b:widget-setting name='content'/>
-            </b:widget-settings>
-            <b:includable id='main'/>
-          </b:widget>
-        </b:section>
-    </div>
 
     <!-- ================= HOME VIEW ================= -->
-    <div id='home-view'>
-        <div class='header'>
-            <div class='top-bar'>
-                <div class='logo' id='siteLogo'>StreamX</div>
-                <div class='online-count'>🔴 <span id='liveUsers'>0</span> Online</div>
+    <div id="home-view">
+        <div class="header">
+            <div class="top-bar">
+                <div class="logo" id="siteLogo">StreamX</div>
+                <div class="online-count">🔴 <span id="liveUsers">0</span> Online</div>
             </div>
-            <input class='search-box' id='searchInput' oninput='filterVideos()' placeholder='ভিডিও খুঁজুন...' type='text'/>
+            <input class="search-box" id="searchInput" oninput="filterVideos()" placeholder="ভিডিও খুঁজুন..." type="text">
         </div>
 
-        <div class='category-scroll' id='categoryBar'>
-            <button class='cat-btn active' onclick='selectCategory(&apos;All&apos;)'>All</button>
+        <div class="category-scroll" id="categoryBar">
+            <button class="cat-btn active" onclick="selectCategory('All')">All</button>
         </div>
 
-        <div class='video-grid' id='videoGrid'/>
+        <div class="video-grid" id="videoGrid"></div>
     </div>
 
     <!-- ================= PLAYER VIEW ================= -->
-    <div id='player-view'>
-        <div class='back-btn' onclick='closePlayer()'>&#11013; ফ&#2495;র&#2503; য&#2494;ন</div>
+    <div id="player-view">
+        <div class="back-btn" onclick="closePlayer()">⬅ ফিরে যান</div>
         
-        <div class='player-wrapper'>
-            <div class='player-container' id='videoPlayerContainer'/>
+        <div class="player-wrapper">
+            <div class="player-container" id="videoPlayerContainer"></div>
             
-            <div class='ad-overlay' id='midRollAdOverlay'>
-                <div class='ad-box'>
+            <div class="ad-overlay" id="midRollAdOverlay">
+                <div class="ad-box">
                     <h3>📢 Ad Break</h3>
-                    <p>ভ&#2495;ড&#2495;ওট&#2495; দ&#2503;খত&#2503; ন&#2495;চ&#2503;র ব&#2494;টন&#2503; ক&#2509;ল&#2495;ক কর&#2497;ন</p>
-                    <button onclick='continueVideo()'>ক&#2509;ল&#2495;ক কর&#2497;ন &#9197;</button>
+                    <p>ভিডিওটি দেখতে নিচের বাটনে ক্লিক করুন</p>
+                    <button onclick="continueVideo()">ক্লিক করুন ⏵</button>
                 </div>
             </div>
         </div>
 
-        <!-- 🚀 আনলক ব&#2494;টন স&#2503;কশন -->
-        <div id='unlockSystem' style='display: none; padding: 15px 15px 5px 15px; background: #1a1a24; border-bottom: 1px solid #222;'>
-            <div style='font-size: 13px; color: #aaa; margin-bottom: 8px;'>🔓 ফ&#2497;ল ভ&#2495;ড&#2495;ও দ&#2503;খত&#2503; আনলক কর&#2497;ন:</div>
-            <button class='unlock-btn' id='unlockBtn' onclick='startAdChain()'>🔒 ফ&#2497;ল ক&#2494;ল&#2503;কশন (<span id='adCount'>0</span>/<span id='targetAds'>0</span>)</button>
+        <!-- 🚀 আনলক বাটন সেকশন -->
+        <div id="unlockSystem" style="display: none; padding: 15px 15px 5px 15px; background: #1a1a24; border-bottom: 1px solid #222;">
+            <div style="font-size: 13px; color: #aaa; margin-bottom: 8px;">🔓 ফুল ভিডিও দেখতে আনলক করুন:</div>
+            <button class="unlock-btn" id="unlockBtn" onclick="startAdChain()">🔒 ফুল কালেকশন (<span id="adCount">0</span>/<span id="targetAds">0</span>)</button>
         </div>
 
-        <!-- ভ&#2495;ড&#2495;ও ড&#2495;ট&#2503;ইলস -->
-        <div class='video-details'>
-            <div class='title-row' id='playTitle'>Video Title</div>
-            <div class='stats-row'>👁 <span id='playViews'>0</span> Views &#8226; 📁 <span id='playCategory'>Category</span></div>
+        <!-- ভিডিও ডিটেইলস -->
+        <div class="video-details">
+            <div class="title-row" id="playTitle">Video Title</div>
+            <div class="stats-row">👁 <span id="playViews">0</span> Views • 📁 <span id="playCategory">Category</span></div>
             
-            <div class='btn-group'>
-                <button class='action-btn' onclick='likeVideo()'>👍 <span id='playLikes'>0</span></button>
-                <button class='action-btn'>👎</button>
-                <button class='action-btn'>💬 <span id='playComments'>0</span></button>
-                <button class='action-btn' onclick='shareVideo()'>🔗 Share</button>
+            <div class="btn-group">
+                <button class="action-btn" onclick="likeVideo()">👍 <span id="playLikes">0</span></button>
+                <button class="action-btn">👎</button>
+                <button class="action-btn">💬 <span id="playComments">0</span></button>
+                <button class="action-btn" onclick="shareVideo()">🔗 Share</button>
             </div>
         </div>
     </div>
 
     <script>
-    //<![CDATA[
         // ⚠️ আপনার Firebase Config এখানে দিন
         const firebaseConfig = {
             apiKey: "AIzaSyCuIod3fHmhXNlNDj9DD41pjBYhlkihxAU",
-  authDomain: "streamx-c6be1.firebaseapp.com",
-  databaseURL: "https://streamx-c6be1-default-rtdb.firebaseio.com",
-  projectId: "streamx-c6be1",
-  storageBucket: "streamx-c6be1.firebasestorage.app",
-  messagingSenderId: "1048225737752",
-  appId: "1:1048225737752:web:2e7c9497f6a72f4d17676d",
-  measurementId: "G-3GTPKD05Q1"
+            authDomain: "streamx-c6be1.firebaseapp.com",
+            databaseURL: "https://streamx-c6be1-default-rtdb.firebaseio.com",
+            projectId: "streamx-c6be1",
+            storageBucket: "streamx-c6be1.firebasestorage.app",
+            messagingSenderId: "1048225737752",
+            appId: "1:1048225737752:web:2e7c9497f6a72f4d17676d",
+            measurementId: "G-3GTPKD05Q1"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -152,10 +135,10 @@
         let currentlyPlayingId = null;
         let currentVideoData = null;
         let adsWatched = 0;
-        let globalDirectLink = ""; // এটি Adsterra বা Monetag ডিরেক্ট লিংকের জন্য
+        let globalDirectLink = ""; 
         let globalMidRollTimes = [];
         let shownAds = [];
-        let globalMonetagId = "";
+        let globalMonetagId = "11167129"; // Default ID set
 
         // IDLE AD SYSTEM (Direct Link Backup)
         let idleTime = 0;
@@ -231,7 +214,7 @@
                                 '<div class="card-stats"><span>👁 ' + (vid.views || 0) + '</span><span>👍 ' + (vid.likes || 0) + '</span></div>' +
                             '</div></div>';
             });
-            document.getElementById('videoGrid').innerHTML = html || '<p style="text-align:center; padding: 20px; color: gray;">কোনো ভিডিও পাওয়া যায়নি!</p>';
+            document.getElementById('videoGrid').innerHTML = html || '<p style="text-align:center; padding: 20px; color: gray;">কোনো ভিডিও পাওয়া যায়নি!</p>';
         }
 
         function selectCategory(cat) {
@@ -268,7 +251,6 @@
             let playerHtml = '';
             let vUrl = vid.videoUrl || ''; 
             
-            // থাম্বনেইল লিংকটি আগেই বের করে রাখছি
             let thumbUrl = (vid.thumb && vid.thumb.trim() !== '') ? vid.thumb : 'https://via.placeholder.com/600x340?text=No+Thumbnail';
             
             if(vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
@@ -278,7 +260,6 @@
             } else if (vUrl !== '') {
                 playerHtml = '<video id="mainVideo" controls="controls" autoplay="autoplay" controlsList="nodownload" oncontextmenu="return false;" style="pointer-events: auto;"><source src="' + vUrl + '" type="video/mp4"/></video>';
             } else {
-                // 🎯 পরিবর্তন: ভিডিও লিংক না থাকলে এরর মেসেজের বদলে থাম্বনেইল ছবিটি দেখাবে!
                 playerHtml = '<img src="' + thumbUrl + '" style="width: 100%; height: 100%; object-fit: contain; background: #000;" alt="Thumbnail"/>';
             }
             
@@ -345,7 +326,7 @@
             else { alert("Share feature not supported on this browser."); }
         }
 
-      // ==========================================
+        // ==========================================
         // 💬 MULTI-AD LOGIC (AdsGram -> তারপর Monetag -> তারপর 5s Cooldown)
         // ==========================================
         
@@ -354,7 +335,6 @@
         function startAdChain() {
             if(!currentVideoData || isAdLoading) return;
 
-            // আনলক হয়ে গিয়ে থাকলে বাটনে ক্লিক করলে সরাসরি লিংক ওপেন হবে
             if (adsWatched >= parseInt(currentVideoData.adTarget)) {
                 if(currentVideoData.unlockLink) {
                     window.open(currentVideoData.unlockLink, '_blank');
@@ -370,49 +350,43 @@
 
             db.ref('analytics/total_clicks').set(firebase.database.ServerValue.increment(1));
 
-            // ১. প্রথমে AdsGram অ্যাড লোড করবে
             playAdsGram().then(() => {
-                // AdsGram শেষ হলে বা না থাকলেও সরাসরি Monetag শুরু হবে
                 triggerMonetagRewardedAd();
             });
         }
 
-        // AdsGram কল করার ফাংশন
         function playAdsGram() {
             return new Promise((resolve) => {
                 if (window.Adsgram) {
                     try {
-                        // নিচে আপনার AdsGram এর Block ID দিন
                         const AdController = window.Adsgram.init({ blockId: "35555" }); 
                         AdController.show().then(() => {
-                            resolve(); // অ্যাড দেখা শেষ, প্রমিস রিজলভ হবে
+                            resolve(); 
                         }).catch((err) => {
                             console.warn("AdsGram Error/No Ad:", err);
-                            resolve(); // অ্যাড না থাকলেও পরের অ্যাডে যাওয়ার জন্য রিজলভ হবে
+                            resolve(); 
                         });
                     } catch(e) {
                         resolve();
                     }
                 } else {
-                    resolve(); // AdsGram SDK লোড না হলেও পরের অ্যাডে যাবে
+                    resolve(); 
                 }
             });
         }
 
-        // Monetag কল করার ফাংশন
         function triggerMonetagRewardedAd() {
             let unlockBtn = document.getElementById('unlockBtn');
             unlockBtn.innerHTML = "⏳ Monetag লোড হচ্ছে...";
             
-            let monetagFunc = window['show_11167129' + globalMonetagId]; 
+            // Fixed the variable reference to safely call Monetag
+            let monetagFunc = window['show_' + globalMonetagId]; 
             
             if (typeof monetagFunc === 'function') {
                 try {
                     monetagFunc().then(() => {
-                        // Monetag অ্যাড দেখা শেষ হলে রিওয়ার্ড এবং ৫ সেকেন্ডের টাইমার শুরু হবে
                         processRewardWithCooldown(); 
                     }).catch((err) => {
-                        // Monetag ব্যর্থ হলে Direct Link ওপেন হবে
                         fallbackToDirectLink(); 
                     });
                 } catch(e) { 
@@ -423,7 +397,6 @@
             } 
         }
 
-        // Direct Link ওপেন করার ফাংশন
         function fallbackToDirectLink() {
             if(globalDirectLink && globalDirectLink.trim() !== '') {
                 window.open(globalDirectLink, '_blank');
@@ -431,22 +404,19 @@
             processRewardWithCooldown(); 
         }
 
-        // 🟢 কাউন্ট বৃদ্ধি এবং ৫ সেকেন্ডের টাইমার
         function processRewardWithCooldown() {
             adsWatched++;
             let target = parseInt(currentVideoData.adTarget);
             let unlockBtn = document.getElementById('unlockBtn');
             
             if(adsWatched >= target) {
-                // টার্গেট পূরণ হলে আনলক হয়ে যাবে
                 unlockBtn.innerHTML = "📥 ফুল ভিডিও দেখুন / ডাউনলোড করুন";
                 unlockBtn.style.background = "#00e676";
                 unlockBtn.style.color = "#000";
                 unlockBtn.disabled = false; 
                 isAdLoading = false; 
             } else {
-                // ৫ সেকেন্ডের কুলডাউন টাইমার
-                let timeLeft = 1; 
+                let timeLeft = 1; // Updated to 1 as per your previous code adjustment
                 unlockBtn.innerHTML = '⏳ অপেক্ষা করুন (' + timeLeft + 's)';
                 
                 let timer = setInterval(() => {
@@ -460,14 +430,14 @@
                         unlockBtn.disabled = false;
                         isAdLoading = false; 
                     }
-                }, 1000); // প্রতি ১ সেকেন্ডে কাউন্টডাউন
+                }, 1000); 
             }
         }
-    //]]>
     </script>
-   <script async='async' data-cfasync='false' src='https://pl29708210.effectivecpmnetwork.com/b3465a31cf2fa6f491192827f6664756/invoke.js'/>
-<div id='container-b3465a31cf2fa6f491192827f6664756'/>
-  
-  <script src='https://pl29708142.effectivecpmnetwork.com/05/1e/2f/051e2f937c77b76374f3e58945cdf7d1.js'/>
+    
+    <!-- External Scripts Fix -->
+    <script async="async" data-cfasync="false" src="https://pl29708210.effectivecpmnetwork.com/b3465a31cf2fa6f491192827f6664756/invoke.js"></script>
+    <div id="container-b3465a31cf2fa6f491192827f6664756"></div>
+    <script src="https://pl29708142.effectivecpmnetwork.com/05/1e/2f/051e2f937c77b76374f3e58945cdf7d1.js"></script>
 </body>
 </html>
