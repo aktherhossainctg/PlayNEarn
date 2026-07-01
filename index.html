@@ -52,7 +52,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <!-- Monetag SDK -->
-    <script data-sdk="show_11167129" data-zone="11167129" src="//libtl.com/sdk.js"></script>
+    <script src='//libtl.com/sdk.js' data-zone='11167129' data-sdk='show_11167129'></script>
   
     <!-- TELEGRAM WEB APP SCRIPT -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -380,7 +380,7 @@
             unlockBtn.innerHTML = "⏳ Monetag লোড হচ্ছে...";
             
             // Fixed the variable reference to safely call Monetag
-            let monetagFunc = window['show_11167129' + globalMonetagId]; 
+            let monetagFunc = window['show_' + globalMonetagId]; 
             
             if (typeof monetagFunc === 'function') {
                 try {
